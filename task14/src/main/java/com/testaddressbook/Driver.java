@@ -7,29 +7,20 @@ import java.time.Duration;
 
 public class Driver {
 
-    WebDriver driver;
-
-    public Driver() {
+    public static void init() {
 
         System.setProperty("webdriver.chrome.driver",
                 System.getProperty("user.dir") + "./src/main/resources/chromedriver.exe");
-
-        this.driver = new ChromeDriver();
     }
 
-    public void init() {
+    public static WebDriver getChromeDriver() {
 
+        init();
+
+        WebDriver driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
-    }
-
-    public WebDriver getDriver() {
 
         return driver;
-    }
-
-    public void close() {
-
-        this.driver.quit();
     }
 }
