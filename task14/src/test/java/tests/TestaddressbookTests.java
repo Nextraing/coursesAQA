@@ -77,7 +77,7 @@ public class TestaddressbookTests {
     public static void editAddressTest() {
 
         DRIVER.get(BASE_URL + ADDRESSES_URL);
-        DRIVER.findElement(EDIT_LINK).click();
+        DRIVER.findElement(EDIT_ADDRESS_LINK).click();
         DRIVER.manage().timeouts().getPageLoadTimeout();
 
         DRIVER.findElement(NEW_HAMPSHIRE_STATE_LISTBOX).click();
@@ -97,7 +97,7 @@ public class TestaddressbookTests {
     public static void deleteAddressTest() {
 
         DRIVER.get(BASE_URL + ADDRESSES_URL);
-        DRIVER.findElement(DESTROY_LINK).click();
+        DRIVER.findElement(DESTROY_ADDRESS_LINK).click();
         DRIVER.switchTo().alert().accept();
         DRIVER.manage().timeouts().getPageLoadTimeout();
 
