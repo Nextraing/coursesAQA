@@ -7,10 +7,9 @@ import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-
+import static com.testaddressbook.Log.LOG;
+import static constants.Constants.*;
 import static locators.Locators.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,17 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestaddressbookJUnit5Tests {
 
-    private static final Logger log = LoggerFactory.getLogger(TestaddressbookJUnit5Tests.class);
+    private static final String CLASS_SIMPLE_NAME = TestaddressbookJUnit5Tests.class.getSimpleName();
     private final WebDriver driver = Driver.getChromeDriver();
-
-    final static String BASE_URL = "http://a.testaddressbook.com/";
-    final static String SIGH_IN_URL = "sign_in";
-    final static String ADDRESSES_URL = "addresses";
 
     @BeforeAll
     void setUp() {
 
-        log.info("Start of {}.", TestaddressbookJUnit5Tests.class.getSimpleName());
+        LOG.info("Start of {}.", CLASS_SIMPLE_NAME);
+        driver.get(BASE_URL);
     }
 
     @ParameterizedTest
@@ -38,15 +34,14 @@ public class TestaddressbookJUnit5Tests {
     @DisplayName("LogIn Test")
     void loginTest(String email, String password) {
 
-        driver.get(BASE_URL + SIGH_IN_URL);
+        driver.findElement(SIGN_IN_LINK).click();
         driver.findElement(EMAIL_FIELD).sendKeys(email);
         driver.findElement(PASSWORD_FIELD).sendKeys(password);
         driver.findElement(SIGH_IN_BUTTON).click();
-        driver.manage().timeouts().getPageLoadTimeout();
 
         String actualURL = driver.getCurrentUrl();
 
-        log.info("  LogIn Test.");
+        LOG.info("  LogIn Test.");
         assertEquals(BASE_URL, actualURL, "Incorrect email or password during authorization.");
     }
 
@@ -56,8 +51,7 @@ public class TestaddressbookJUnit5Tests {
     @DisplayName("Add address Test")
     void addAddressTest() {
 
-        driver.get(BASE_URL + ADDRESSES_URL);
-
+        driver.findElement(ADDRESSES_LINK).click();
         driver.findElement(NEW_ADDRESS_LINK).click();
 
         driver.findElement(FIRST_NAME_FIELD).sendKeys("Jack");
@@ -79,12 +73,11 @@ public class TestaddressbookJUnit5Tests {
         driver.findElement(NOTE_FIELD).sendKeys("Note note note.");
 
         driver.findElement(ACCEPT_BUTTON).click();
-        driver.manage().timeouts().getPageLoadTimeout();
 
         String expectedAlert = "Address was successfully created.";
         String actualAlert = driver.findElement(ALERT_NOTICE).getText();
 
-        log.info("  Add address Test.");
+        LOG.info("  Add address Test.");
         assertEquals(expectedAlert, actualAlert, "Adding address error.");
     }
 
@@ -94,8 +87,7 @@ public class TestaddressbookJUnit5Tests {
     @DisplayName("Add address from CSV file Test")
     void addAddressFromCSVTest(ArgumentsAccessor arguments) {
 
-        driver.get(BASE_URL + ADDRESSES_URL);
-
+        driver.findElement(ADDRESSES_LINK).click();
         driver.findElement(NEW_ADDRESS_LINK).click();
 
         driver.findElement(FIRST_NAME_FIELD).sendKeys(arguments.getString(0));
@@ -117,12 +109,11 @@ public class TestaddressbookJUnit5Tests {
         driver.findElement(NOTE_FIELD).sendKeys(arguments.getString(12));
 
         driver.findElement(ACCEPT_BUTTON).click();
-        driver.manage().timeouts().getPageLoadTimeout();
 
         String expectedAlert = "Address was successfully created.";
         String actualAlert = driver.findElement(ALERT_NOTICE).getText();
 
-        log.info("  Add address from CSV file Test.");
+        LOG.info("  Add address from CSV file Test.");
         assertEquals(expectedAlert, actualAlert, "Adding address from CSV file error.");
     }
 
@@ -131,9 +122,8 @@ public class TestaddressbookJUnit5Tests {
     @DisplayName("Edit address Test")
     void editAddressTest() {
 
-        driver.get(BASE_URL + ADDRESSES_URL);
-        driver.findElement(EDIT_LINK).click();
-        driver.manage().timeouts().getPageLoadTimeout();
+        driver.findElement(ADDRESSES_LINK).click();
+        driver.findElement(EDIT_ADDRESS_LINK).click();
 
         driver.findElement(NEW_HAMPSHIRE_STATE_LISTBOX).click();
         driver.findElement(COLOR_FIELD).sendKeys("#00FFF0");
@@ -141,12 +131,11 @@ public class TestaddressbookJUnit5Tests {
                 .sendKeys(System.getProperty("user.dir") + "./src/main/resources/pikachu.png");
 
         driver.findElement(ACCEPT_BUTTON).click();
-        driver.manage().timeouts().getPageLoadTimeout();
 
         String expectedAlert = "Address was successfully updated.";
         String actualAlert = driver.findElement(ALERT_NOTICE).getText();
 
-        log.info("  Edit address Test.");
+        LOG.info("  Edit address Test.");
         assertEquals(expectedAlert, actualAlert, "Editing address error.");
     }
 
@@ -155,15 +144,14 @@ public class TestaddressbookJUnit5Tests {
     @DisplayName("Delete address Test")
     void deleteAddressTest() {
 
-        driver.get(BASE_URL + ADDRESSES_URL);
-        driver.findElement(DESTROY_LINK).click();
+        driver.findElement(ADDRESSES_LINK).click();
+        driver.findElement(DESTROY_ADDRESS_LINK).click();
         driver.switchTo().alert().accept();
-        driver.manage().timeouts().getPageLoadTimeout();
 
         String expectedAlert = "Address was successfully destroyed.";
         String actualAlert = driver.findElement(ALERT_NOTICE).getText();
 
-        log.info("  Delete address Test.");
+        LOG.info("  Delete address Test.");
         assertEquals(expectedAlert, actualAlert, "Deleting address error.");
     }
 
@@ -173,21 +161,19 @@ public class TestaddressbookJUnit5Tests {
     @DisplayName("LogOut Test")
     void logoutTest() {
 
-        driver.get(BASE_URL);
         driver.findElement(SIGN_OUT_LINK).click();
-        driver.manage().timeouts().getPageLoadTimeout();
 
-        String expectedURL = BASE_URL + SIGH_IN_URL;
+        String expectedURL = driver.findElement(SIGN_IN_LINK).getAttribute("href");
         String actualURL = driver.getCurrentUrl();
 
-        log.info("  LogOut Test.");
+        LOG.info("  LogOut Test.");
         assertEquals(expectedURL, actualURL, "LogOut error.");
     }
 
     @AfterAll
     void tearDown() {
 
-        log.info("End of {}.", TestaddressbookJUnit5Tests.class.getSimpleName());
+        LOG.info("End of {}.", CLASS_SIMPLE_NAME);
         driver.quit();
     }
 

@@ -4,14 +4,17 @@ import org.openqa.selenium.By;
 
 public class Locators {
 
+    public static final By SIGN_IN_LINK = By.id("sign-in");
+    public static final By SIGN_OUT_LINK = By.linkText("Sign out");
+    public static final By HOME_LINK = By.xpath(".//a[@data-test='home']");
+    public static final By ADDRESSES_LINK = By.linkText("Addresses");
+    public static final By NEW_ADDRESS_LINK = By.linkText("New Address");
+    public static final By EDIT_ADDRESS_LINK = By.linkText("Edit");
+    public static final By DESTROY_ADDRESS_LINK = By.linkText("Destroy");
+
     public static final By EMAIL_FIELD = By.id("session_email");
     public static final By PASSWORD_FIELD = By.id("session_password");
     public static final By SIGH_IN_BUTTON = By.name("commit");
-    public static final By SIGN_OUT_LINK = By.linkText("Sign out");
-
-    public static final By NEW_ADDRESS_LINK = By.linkText("New Address");
-    public static final By EDIT_LINK = By.linkText("Edit");
-    public static final By DESTROY_LINK = By.linkText("Destroy");
 
     public static final By FIRST_NAME_FIELD = By.cssSelector("#address_first_name");
     public static final By LAST_NAME_FIELD = By.xpath(".//input[@id='address_last_name']");
